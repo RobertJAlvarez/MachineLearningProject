@@ -11,7 +11,7 @@ def process_gamma_dataset():
     x.append(np.fromstring(line[:-2], dtype=float, sep=','))
   infile.close()
 
-  #Make dependent and independet numpy arrays
+  #Make dependent and independent numpy arrays
   x = np.array(x).astype(np.float32)
   y = np.array(y)
 
@@ -45,7 +45,6 @@ def best_feature_DT(x_train, y_train):
     if best_acc < curr_acc:
       best_acc = curr_acc
       best_feature = i_feature
-
   return best_feature
 
 class InvalidParameterError(Exception):
@@ -129,7 +128,7 @@ class DecisionTreeClassifier:
     if feature_idx != None and (feature_idx < 0 or feature_idx > x_train.shape[1]):
       raise InvalidParameterError(f"feature_idx must be in the range [0,{x_train.shape[1]}]")
 
-    #If feature is not given, we look for the best one
+    #Use feature index given or use splitter option to get one
     if (feature_idx == None):
       if self.splitter == "best":
         best_feature = best_feature_DT(x_train, y_train)
@@ -166,30 +165,23 @@ class DecisionTreeClassifier:
     return pred
 
 def one_feature_DT(x_train, y_train, a):
-  dt = DecisionTreeClassifier(max_depth=1)
-  dt.fit(x_train, y_train, a)
-  return dt
 
-def second_question():
-  #Second question
-  print("Second question:")
-
+if __name__ == '__main__':
   ## Process gamma ray dataset
   x_train, x_test, y_train, y_test = process_gamma_dataset()
 
   ##Part a
   feature_idx = int(input("What feature index you want to try? "))
-  model = one_feature_DT(x_train, y_train, feature_idx)
+  model = DecisionTreeClassifier(max_depth=1)
+  model.fit(x_train, y_train, a)
   pred = model.predict(x_test)
   print("a: model accuracy = ", accuracy(y_test, pred))
 
   ##Part b
+  print("With best feature split:")
   model = DecisionTreeClassifier(splitter="best", max_depth=1)
   model.fit(x_train, y_train)
   pred = model.predict(x_test)
   print("b: model accuracy = ", accuracy(y_test, pred))
   print("b: Best feature = ", model.feature_idx)
-
-if __name__ == '__main__':
-  second_question()
 

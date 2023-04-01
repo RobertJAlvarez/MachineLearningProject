@@ -1,6 +1,4 @@
-import tensorflow as tf
 import numpy as np
-from sklearn.model_selection import train_test_split
 from PerformanceMetrics import accuracy
 
 class knn:
@@ -35,10 +33,7 @@ class knn:
         else:
           possibles[irow,self.y_train[idx]] += 1
 
-    votes = np.argmax(possibles, axis=1)
-
-    #TODO: Generalize this part to work with any target ranges
-    return votes
+    return self.y_unique[np.argmax(possibles, axis=1)]
 
 def optimal_knn(x_train, y_train, x_test, y_test):
   best_acc = -1.0

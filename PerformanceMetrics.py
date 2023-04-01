@@ -28,3 +28,8 @@ def confusion_matrix(y,p):
     m.append(arr)
   return m
 
+def MAE(y,p):
+  return np.sum(np.absolute(y-p))/y.shape[0]
+
+def MSE(y,p):
+  return np.sum((y-p)**2)/y.shape[0]
