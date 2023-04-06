@@ -1,14 +1,15 @@
 import numpy as np
 from PerformanceMetrics import accuracy
+from DataSets import mnist
 
-class knn:
+class KNeighborsClassifier:
   # Constructor
-  def __init__(self,k=1, weighted = False):
+  def __init__(self,k=1,weighted = False):
     self.k = k
     self.weighted = weighted
 
   # Fit model parameters to training data
-  def fit(self,x_train, y_train):
+  def fit(self,x_train,y_train):
     self.x_train = x_train
     self.y_train = y_train
     self.y_unique = np.unique(y_train)
@@ -35,21 +36,14 @@ class knn:
 
     return self.y_unique[np.argmax(possibles, axis=1)]
 
-def optimal_knn(x_train, y_train, x_test, y_test):
-  best_acc = -1.0
-  best_knn = None
-  #Get bet k value for knn
-  for k in range(1,16,2):
-    model = KNeighborsClassifier(k=k, weighted=True)
-    model.fit(x_train, y_train)
-    pred = model.predict(x_test)
-    curr_acc = accuracy(y_test, pred)
-    if best_acc < curr_acc:
-      best_acc = curr_acc
-      best_knn = model
-  return best_knn
-
 if __name__ == '__main__':
-  model = optimal_knn(x_train, y_train, x_test, y_test)
-  print("Best k = ", model.k)
+  x_train,x_test,y_train,y_test = mnist()
+
+  for weighted in [False,True]:
+    for k in range(1,16,2):
+      print('k =',k,'weighted =',weighted)
+      model = KNeighborsClassifier(k=k, weighted = weighted)
+      model.fit(x_train, y_train)
+      pred = model.predict(x_test)
+      print('Accuracy = {:6.4f}'.format(accuracy(y_test, pred)))
 

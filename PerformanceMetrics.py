@@ -33,3 +33,4 @@ def MAE(y,p):
 
 def MSE(y,p):
   return np.sum((y-p)**2)/y.shape[0]
+

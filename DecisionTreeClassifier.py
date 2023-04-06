@@ -1,22 +1,6 @@
-import tensorflow as tf
 import numpy as np
-from sklearn.model_selection import train_test_split
-
-def process_gamma_dataset():
-  #Read file information
-  infile = open("gamma04.txt","r")
-  x, y  = [], []
-  for line in infile:
-    y.append(int(line[-2:-1] =='g'))
-    x.append(np.fromstring(line[:-2], dtype=float, sep=','))
-  infile.close()
-
-  #Make dependent and independent numpy arrays
-  x = np.array(x).astype(np.float32)
-  y = np.array(y)
-
-  #Split the data
-  return train_test_split(x, y, test_size=0.2, random_state=4361)
+from PerformanceMetrics import accuracy
+from DataSets import process_gamma_dataset
 
 def calc_predict(y_train):
   #Get all possible values of y_train
@@ -184,4 +168,8 @@ if __name__ == '__main__':
   pred = model.predict(x_test)
   print("b: model accuracy = ", accuracy(y_test, pred))
   print("b: Best feature = ", model.feature_idx)
+
+  model = DecisionTreeClassifier(max_depth=1)
+  model.fit(x_train, y_train, a)
+  pred = model.predict(x_test)
 
