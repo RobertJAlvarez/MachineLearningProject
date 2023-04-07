@@ -11,8 +11,9 @@ class LogisticRegression:
   def sigmoid(self, z):
     return 1/(1+np.exp(-z))
 
-  def __init__(self, penalty=None, max_iter=100):
+  def __init__(self, penalty=None, tol=1e-4, max_iter=100):
     self.penalty = penalty
+    self.tol = tol
     self.max_iter = max_iter
 
   #TODO: Upgrade this so it can handle one-hot representations
@@ -25,8 +26,9 @@ class LogisticRegression:
       W = p*(1-p)
       temp2 = W*X
       temp = np.linalg.inv(np.matmul(X.T, W*X))
-      betas = betas + np.matmul(np.matmul(temp,X.T),(y-p))
-      #betas = betas - alpha*np.dot(X.T, self.sigmoid(np.dot(X,betas)) - y)
+      new_betas = betas + np.matmul(np.matmul(temp,X.T),(y-p))
+      if np.sum(abs(new_betas-betas)) < self.tol: break
+      betas = new_betas
     self.betas = betas
 
   #TODO: Upgrade this so it can handle one-hot representations
@@ -56,7 +58,7 @@ if __name__ == '__main__':
 
   #Run sklearn simple model
   print("\nSKLEARN model")
-  model = LR(max_iter=100, penalty=None)
+  model = LR(max_iter=100, penalty=None, tol=1e-4)
   print("model = ", model)
   model.fit(x_train, y_train)
   pred = model.predict(x_test)
