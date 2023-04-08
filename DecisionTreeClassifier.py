@@ -1,35 +1,42 @@
 import numpy as np
 from PerformanceMetrics import accuracy
-from DataSets import process_gamma_dataset
-
-def calc_predict(y_train):
-  #Get all possible values of y_train
-  options = np.unique(y_train)
-
-  #Calculate which options gives the highest accuracy
-  largest_sum = -1
-  best_option = -1
-  for option in options:
-    curr_sum = np.sum(y_train==option)
-    if largest_sum < curr_sum:
-      largest_sum = curr_sum
-      best_option = option
-
-  return (best_option, largest_sum)
+from DataSets import process_gamma_dataset, mnist
+from sklearn.tree import DecisionTreeClassifier as DTC
 
 def best_feature_DT(x_train, y_train):
   best_feature = -1
   best_acc = -1.0
   for i_feature in range(x_train.shape[1]):
     sub_x = x_train[:,i_feature]
-    i_mean = np.mean(sub_x)
-    l_temp = calc_predict(y_train[sub_x<=i_mean])
-    r_temp = calc_predict(y_train[sub_x>i_mean])
-    curr_acc = (l_temp[1] + r_temp[1])/y_train.shape[0]
+    if isinstance(sub_x[0], (np.integer, np.floating)):
+      i_mean = np.mean(sub_x)
+      l_temp = calc_predict(y_train[sub_x<=i_mean])
+      r_temp = calc_predict(y_train[sub_x>i_mean])
+      curr_acc = (l_temp[1] + r_temp[1])/y_train.shape[0]
+    else:
+      curr_acc = 0.0
+      for option in np.unique(sub_x):
+        curr_acc += calc_predict(y_train[sub_x==option])[1]
+      curr_acc /= y_train.shape[0]
+
     if best_acc < curr_acc:
       best_acc = curr_acc
       best_feature = i_feature
   return best_feature
+
+def calc_predict(y_train):
+  #Get all possible values of y_train
+
+  #Calculate which options gives the highest accuracy
+  largest_sum = -1
+  best_option = -1
+  for option in np.unique(y_train):
+    curr_sum = np.sum(y_train==option)
+    if largest_sum < curr_sum:
+      largest_sum = curr_sum
+      best_option = option
+
+  return (best_option, largest_sum)
 
 class InvalidParameterError(Exception):
   def __init__(self, messate="Invalid parameter"):
@@ -50,7 +57,7 @@ class DecisionTreeClassifier:
     sub_x = x_train[:,feature_idx]
 
     #If the attribute is numeric we use the mean, if it is categorical we use the unique values
-    if isinstance(x_train[0,0], np.floating):
+    if isinstance(sub_x[0], (np.integer, np.floating)):
       self.isnumeric = True
 
       #Split using the mean
@@ -93,9 +100,9 @@ class DecisionTreeClassifier:
         self.branches[option] = dt
 
         new_idxs = sub_x==option
+        new_y = y_train[new_idxs]
 
         #If max_depth is 1 or if only one y value is left, we create the leafs
-        new_y = y_train[new_idxs]
         if self.max_depth == 1 or np.unique(new_y).shape[0]==1:
           #Set dt as a leaf and fill in its attributes
           dt.is_leaf = True
@@ -142,34 +149,35 @@ class DecisionTreeClassifier:
       r_sub = sub_x > self.break_point
       pred[r_sub] = self.branches["g"].predict(x_test[r_sub])
     else:
-      for dt in self.branches.values():
-        match_x = sub_x==dt.att_value
+      for option,dt in self.branches.items():
+        match_x = sub_x==option
         #Select x_test object that match this branch and assign prediction values
         pred[match_x] = dt.predict(x_test[match_x])
     return pred
 
-def one_feature_DT(x_train, y_train, a):
-
 if __name__ == '__main__':
   ## Process gamma ray dataset
-  x_train, x_test, y_train, y_test = process_gamma_dataset()
+  #x_train, x_test, y_train, y_test = process_gamma_dataset()
+  x_train, x_test, y_train, y_test = mnist()
 
   ##Part a
-  feature_idx = int(input("What feature index you want to try? "))
-  model = DecisionTreeClassifier(max_depth=1)
-  model.fit(x_train, y_train, a)
+  print("My model")
+  model = DecisionTreeClassifier(splitter="best", max_depth=10)
+  model.fit(x_train, y_train)
+  pred = model.predict(x_test)
+  print("a: model accuracy = ", accuracy(y_test, pred))
+
+  print("SKLEARN model:")
+  model = DTC(splitter="best", max_depth=10)
+  model.fit(x_train, y_train)
   pred = model.predict(x_test)
   print("a: model accuracy = ", accuracy(y_test, pred))
 
   ##Part b
-  print("With best feature split:")
-  model = DecisionTreeClassifier(splitter="best", max_depth=1)
-  model.fit(x_train, y_train)
-  pred = model.predict(x_test)
-  print("b: model accuracy = ", accuracy(y_test, pred))
-  print("b: Best feature = ", model.feature_idx)
-
-  model = DecisionTreeClassifier(max_depth=1)
-  model.fit(x_train, y_train, a)
-  pred = model.predict(x_test)
+  #print("With best feature split:")
+  #model = DecisionTreeClassifier(splitter="best", max_depth=1)
+  #model.fit(x_train, y_train)
+  #pred = model.predict(x_test)
+  #print("b: model accuracy = ", accuracy(y_test, pred))
+  #print("b: Best feature = ", model.feature_idx)
 

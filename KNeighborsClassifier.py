@@ -1,6 +1,7 @@
 import numpy as np
 from PerformanceMetrics import accuracy
 from DataSets import mnist
+from sklearn.neighbors import KNeighborsClassifier as KNN
 
 class KNeighborsClassifier:
   # Constructor
@@ -36,14 +37,21 @@ class KNeighborsClassifier:
 
     return self.y_unique[np.argmax(possibles, axis=1)]
 
-if __name__ == '__main__':
-  x_train,x_test,y_train,y_test = mnist()
-
+def run_knn_model(knn_model):
   for weighted in [False,True]:
     for k in range(1,16,2):
       print('k =',k,'weighted =',weighted)
-      model = KNeighborsClassifier(k=k, weighted = weighted)
+      model = knn_model(k=k, weighted = weighted)
       model.fit(x_train, y_train)
       pred = model.predict(x_test)
       print('Accuracy = {:6.4f}'.format(accuracy(y_test, pred)))
+
+if __name__ == '__main__':
+  x_train,x_test,y_train,y_test = mnist()
+
+  print("My model:")
+  run_knn_model(KNeighborsClassifier)
+
+  print("SKLEARN model:")
+  run_knn_model(KNN)
 

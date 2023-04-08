@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
 from PerformanceMetrics import accuracy
-from tensorflow.keras.utils import to_categorical
+from Utils import to_categorical
 from DataSets import mnist
+from sklearn.linear_model import LinearRegression as LR
 
 class LinearRegression:
   def __init__(self):
@@ -46,28 +46,46 @@ class LinearRegression:
     return pred
 
 def classification_():
-  x_train,x_test,y_train,y_test = mnist()
-  model = LinearRegression()
-  y_train_oh = to_categorical(y_train, 10)
+  print("\nUsing mnist for classification:")
 
-  #X = np.hstack((np.ones(shape=(x_train.shape[0],1)),x_train))
-  #temp = np.linalg.pinv(np.matmul(X.T, X)) #(X^TX)^-1
+  x_train,x_test,y_train,y_test = mnist()
+
+  print("My model:")
+  model = LinearRegression()
+  y_train_oh = to_categorical(y_train)
 
   model.fit(x_train,y_train_oh)
   pred = np.argmax(model.predict(x_test),axis=1)
+  print("Accuracy = ", accuracy(y_test,pred))
 
-  print("model.coef_.shape = ", model.coef_.shape)
-  print("pred.shape = ", pred.shape)
+  print("\nSKLEARN model:")
+  model = LR()
+  y_train_oh = to_categorical(y_train)
+
+  model.fit(x_train,y_train_oh)
+  pred = np.argmax(model.predict(x_test),axis=1)
   print("Accuracy = ", accuracy(y_test,pred))
 
 def regression_():
+  print("Using Pecan.txt for regression:")
   #Read data
   df = pd.read_csv("Pecan.txt", delimiter="\t")
   #Remove first and last column
   X = df.values[:, range(1, len(df.columns)-1)]
   Y = df.values[:, len(df.columns)-1]
 
+  print("My model:")
   model = LinearRegression()
+  model.fit(X,Y)
+  print("y intercept: ", model.intercept_)
+  print("coefficients: ", model.coef_)
+
+  #Try to predict from made up data
+  newData = [[120,5,80], [20,40,15]]
+  print("model predictions:", model.predict(newData))
+
+  print("\nSKLEARN model:")
+  model = LR()
   model.fit(X,Y)
   print("y intercept: ", model.intercept_)
   print("coefficients: ", model.coef_)
