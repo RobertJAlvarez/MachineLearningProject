@@ -2,6 +2,7 @@ import numpy as np
 from PerformanceMetrics import accuracy
 from DataSets import process_gamma_dataset, mnist
 from sklearn.tree import DecisionTreeClassifier as DTC
+from time import time
 
 def best_feature_DT(x_train, y_train):
   best_feature = -1
@@ -162,15 +163,19 @@ if __name__ == '__main__':
 
   ##Part a
   print("My model")
+  t0 = time()
   model = DecisionTreeClassifier(splitter="best", max_depth=10)
   model.fit(x_train, y_train)
   pred = model.predict(x_test)
+  print("Elapse time = {:.3f}".format(time() - t0))
   print("a: model accuracy = ", accuracy(y_test, pred))
 
   print("SKLEARN model:")
+  t0 = time()
   model = DTC(splitter="best", max_depth=10)
   model.fit(x_train, y_train)
   pred = model.predict(x_test)
+  print("Elapse time = {:.3f}".format(time() - t0))
   print("a: model accuracy = ", accuracy(y_test, pred))
 
   ##Part b
