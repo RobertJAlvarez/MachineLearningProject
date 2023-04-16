@@ -81,16 +81,6 @@ def regression_():
   print("MSE = ", MSE(y_test, model.predict(x_test)))
   print("Elapse time = {:.5f}".format(time() - t0))
 
-def regression__():
-  print("Using Pecan.txt for regression:")
-  #Read data
-  df = pd.read_csv("Pecan.txt", delimiter="\t")
-
-  #Remove first and last column
-  X = df.values[:, range(1, len(df.columns)-1)]
-  Y = df.values[:, len(df.columns)-1]
-  newData = [[120,5,80], [20,40,15]]
-
 if __name__ == '__main__':
   regression_()
   classification_()

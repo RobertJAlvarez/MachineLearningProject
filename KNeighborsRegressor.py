@@ -7,7 +7,7 @@ from time import time
 
 class KNeighborsRegressor:
   # Constructor
-  def __init__(self,k=1,weighted = False):
+  def __init__(self,k=1,weighted=False):
     self.k = k
     self.weighted = weighted
 
@@ -27,26 +27,37 @@ class KNeighborsRegressor:
 
     # Distance matrix is created, get the k closest elements
     minIdxs = np.argpartition(dist, kth=self.k, axis=-1)[:,:self.k]
-    return np.mean(self.y_train[minIdxs],axis=1)
+
+    if self.weighted:
+      weights = np.array([1/dist[irow,rowIdx] for irow,rowIdx in enumerate(minIdxs)])
+      ans = np.average(self.y_train[minIdxs],axis=1,weights=weights)
+    else:
+      ans = np.mean(self.y_train[minIdxs],axis=1)
+    return ans
 
 if __name__ == '__main__':
-  x_train,x_test,y_train,y_test = process_gpu_running_time()
+  print("Using Pecan.txt for regression:")
+  #Read data
+  df = pd.read_csv("Pecan.txt", delimiter="\t")
 
-  print("My model:")
-  for k in range(1,16,2):
+  #Remove first and last column
+  X = df.values[:, range(1, len(df.columns)-1)]
+  Y = df.values[:, len(df.columns)-1]
+  newData = np.array([[120,5,80], [20,40,15]])
+
+  for k in range(1,6,2):
     print('k =',k)
+    print("My model:",end=' ')
     t0 = time()
-    model = KNeighborsRegressor(k=k)
-    model.fit(x_train,y_train)
-    print("MSE = ", MSE(y_test, model.predict(x_test)))
+    model = KNeighborsRegressor(k=k,weighted=True)
+    model.fit(X,Y)
+    print("Prediction = ", model.predict(newData))
     print("Elapse time = {:.5f}".format(time() - t0))
 
-  print("\nSKLEARN model:")
-  for k in range(1,16,2):
-    print('k =',k)
+    print("SKLEARN model:",end=' ')
     t0 = time()
-    model = KNN(n_neighbors=k)
-    model.fit(x_train,y_train)
-    print("MSE = ", MSE(y_test, model.predict(x_test)))
+    model = KNN(n_neighbors=k,weights='distance')
+    model.fit(X,Y)
+    print("Prediction = ", model.predict(newData))
     print("Elapse time = {:.5f}".format(time() - t0))
 
