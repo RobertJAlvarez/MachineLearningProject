@@ -15,7 +15,6 @@ class KNeighborsRegressor:
   def fit(self,x_train,y_train):
     self.x_train = x_train
     self.y_train = y_train
-    self.y_unique = np.unique(y_train)
 
   # Predict class of test data
   def predict(self,x_test):
