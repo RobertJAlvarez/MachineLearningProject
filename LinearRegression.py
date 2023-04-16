@@ -14,9 +14,6 @@ class LinearRegression:
     #Add column of ones to also calculate beta_0
     X = np.hstack((np.ones(shape=(x_train.shape[0],1)),x_train))
     ny_cols = 1 if len(y_train.shape) == 1 else y_train.shape[1]
-    self.coef_ = np.empty(shape=(ny_cols,x_train.shape[1]))
-    self.intercept_ = np.empty(shape=(ny_cols))
-
     y = np.reshape(y_train,(-1,ny_cols))
 
     #Calculate beta coefficients
