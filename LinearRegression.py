@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from PerformanceMetrics import accuracy, MSE
 from Utils import to_categorical
 from DataSets import mnist, process_gpu_running_time
