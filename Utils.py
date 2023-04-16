@@ -9,3 +9,42 @@ def to_categorical(y):
 
   return cat_y
 
+def standardize(x):
+  for i in range(x.shape[1]):
+    x[:,i] = (x[:,i] - np.mean(x[:,i]))/np.std(x[:,i])
+
+class LabelEncoder:
+  # Constructor
+  def __init__(self):
+    self.classes_ = np.empty((0))
+    pass
+
+  def fit(self, data):
+    self.classes_ = np.unique(data)
+    pass
+
+  def fit_transform(self, data):
+    #Get the classes if they haven't being set
+    if self.classes_.shape[0] == 0:
+      self.fit(data)
+    return self.transform(data)
+
+  def transform(self, data):
+    if isinstance(data, list):
+      data = np.array(data, self.classes_.dtype)
+    temp = np.empty(data.shape,np.int32)
+    for i,c in enumerate(self.classes_):
+      temp[c==data] = i
+    return temp
+
+  def inverse_transform(self, data):
+    if isinstance(data, list):
+      shape = len(data)
+    else:
+      shape = data.shape
+    temp = np.empty(shape,self.classes_.dtype)
+    for i,c in enumerate(self.classes_):
+      i = np.int32(i)
+      temp[i==data] = c
+    return temp
+
