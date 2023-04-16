@@ -17,11 +17,9 @@ class LabelEncoder:
   # Constructor
   def __init__(self):
     self.classes_ = np.empty((0))
-    pass
 
   def fit(self, data):
     self.classes_ = np.unique(data)
-    pass
 
   def fit_transform(self, data):
     #Get the classes if they haven't being set
@@ -47,4 +45,7 @@ class LabelEncoder:
       i = np.int32(i)
       temp[i==data] = c
     return temp
+
+def relu(z):
+  return np.maximum(np.array([[0]]),z)
 
