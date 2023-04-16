@@ -13,7 +13,7 @@ class KNeighborsClassifier:
   def fit(self,x_train,y_train):
     self.x_train = x_train
     self.y_train = y_train
-    self.y_unique = np.unique(y_train)
+    self.classes_ = np.unique(y_train)
 
   # Predict class of test data
   def predict(self,x_test):
@@ -27,7 +27,7 @@ class KNeighborsClassifier:
     minIdxs = np.argpartition(dist, kth=self.k, axis=-1)[:,:self.k]
 
     # Build weight array with the votes and choose the one with the highest one to predict
-    possibles = np.zeros((dist.shape[0],self.y_unique.shape[0]))
+    possibles = np.zeros((dist.shape[0],self.classes_.shape[0]))
     for irow,rowIdx in enumerate(minIdxs):
       for idx in rowIdx:
         if self.weighted:
@@ -35,7 +35,7 @@ class KNeighborsClassifier:
         else:
           possibles[irow,self.y_train[idx]] += 1
 
-    return self.y_unique[np.argmax(possibles, axis=1)]
+    return self.classes_[np.argmax(possibles, axis=1)]
 
 def run_knn_model(knn_model):
   for weighted in [False,True]:

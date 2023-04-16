@@ -17,11 +17,11 @@ class BernoulliNB:
     if self.binarize != None:
       x_train = (x_train>self.binarize).astype(int)
 
-    self.y_unique = np.unique(y_train)
-    pc = np.empty(self.y_unique.shape[0])
-    self.pac1 = np.empty((self.y_unique.shape[0],x_train.shape[1]))
+    self.classes_ = np.sort(np.unique(y_train))
+    pc = np.empty(self.classes_.shape[0])
+    self.pac1 = np.empty((self.classes_.shape[0],x_train.shape[1]))
 
-    for i,y in enumerate(self.y_unique):
+    for i,y in enumerate(self.classes_):
       # Identify which sample match this class
       ind = y_train==y
       # Calculate probability to get 1
@@ -34,18 +34,18 @@ class BernoulliNB:
       pc += self.alpha # Add smoothing
       self.pac1 = self.pac1*(1-2*self.alpha) + self.alpha
     self.pac0 = 1-self.pac1
-    self.log_pc = np.log(pc)
+    self.class_log_prior_ = np.log(pc)
 
   def predict(self, x_test): # Predict class of test data
     if self.binarize != None:
       x_test = (x_test>self.binarize).astype(int)
 
     x_test_0 = 1.0-x_test
-    probs = np.empty((x_test.shape[0],self.y_unique.shape[0]))
-    for i in range(self.y_unique.shape[0]):
+    probs = np.empty((x_test.shape[0],self.classes_.shape[0]))
+    for i in range(self.classes_.shape[0]):
       p = self.pac1[i:i+1]*x_test + self.pac0[i:i+1]*x_test_0
       probs[:,i] = np.sum(np.log(p),axis=1)
-    return np.argmax(probs + self.log_pc,axis=1)
+    return self.classes_[np.argmax(probs + self.class_log_prior_,axis=1)]
 
 if __name__ == '__main__':
   x_train,x_test,y_train,y_test = mnist()
