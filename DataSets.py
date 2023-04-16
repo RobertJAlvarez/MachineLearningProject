@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
@@ -9,7 +10,7 @@ def process_gamma_dataset():
   infile = open("./datasets/gamma04.txt","r")
   x, y  = [], []
   for line in infile:
-    y.append(int(line[-2:-1] =='g'))
+    y.append(int(line[-2:-1] == 'g'))
     x.append(np.fromstring(line[:-2], dtype=float, sep=','))
   infile.close()
 

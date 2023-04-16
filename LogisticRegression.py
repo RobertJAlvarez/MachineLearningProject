@@ -1,6 +1,7 @@
 import numpy as np
 from PerformanceMetrics import accuracy
-from DataSets import process_gamma_dataset
+from DataSets import process_gamma_dataset, mnist
+from Utils import to_categorical
 from sklearn.linear_model import LogisticRegression as LR
 from time import time
 
@@ -9,12 +10,13 @@ def standardize(x):
     x[:,i] = (x[:,i] - np.mean(x[:,i]))/np.std(x[:,i])
 
 class LogisticRegression:
-  def P_(X,B):
+  def P_(self,X,B):
     N = X.shape[0]  #Number of object in training set
+    P = X.shape[1]
     a = np.empty((N,self.K))
     for i in range(self.K):
       a[:,i] = np.reshape(np.exp(np.dot(X,B[i*P:i*P+P])),(-1))
-    a /= np.sum(a,axis=0)
+    a /= np.sum(a,axis=1).reshape((-1,1))
     return np.reshape(a,(-1,1))
 
   def __init__(self, penalty=None, tol=1e-4, max_iter=100):
@@ -37,32 +39,34 @@ class LogisticRegression:
     B = np.zeros(shape=(K*P,1))
     new_B = np.empty(shape=(K*P,1))
     for _ in range(self.max_iter):
-      p = P_(X,B)
+      p = self.P_(X,B)
       y_p = Y-p
       for i in range(K):
         W = p[i*N:i*N+N]*(1-p[i*N:i*N+N])
         XTWX = np.matmul(X.T,W*X)
         temp = np.matmul(np.linalg.pinv(XTWX),X.T)
-        new_betas[i*P:i*P+P] = B[i*P:i*P+P] - np.matmul(temp,y_p[i*N:i*N+N])
-      if np.sum(abs(new_betas-betas)) < self.tol: break
-      B = new_betas
+        new_B[i*P:i*P+P] = B[i*P:i*P+P] - np.matmul(temp,y_p[i*N:i*N+N])
+      if np.sum(abs(new_B-B)) < self.tol: break
+      B = new_B
     self.intercept_ = np.array(B[0::P])
     #Get all betas that are not the intercepts and store it as a 2D array, 1 row per class coefficients
     self.coef_ = np.delete(B,list(range(0,B.shape[0],P)),axis=0).reshape((-1,P-1))
 
   def predict(self, x_test):
     X = np.c_[np.ones((x_test.shape[0],1)),x_test]
-    B = np.hstack((np.reshape(self.intercept_,(-1)),self.coef_)).reshape((-1))
-    p = reshape(P_(X,B),(self.K,-1))
+    B = np.hstack((self.intercept_,self.coef_)).reshape((-1))
+    p = np.reshape(self.P_(X,B),(self.K,-1))
     return np.argmin(p,axis=0)
 
   def __str__(self):
     return '{}(max_iter={:03}, penalty={})'.format(self.__class__.__name__,self.max_iter,self.penalty)
 
 if __name__ == '__main__':
-  x_train,x_test,y_train,y_test = process_gamma_dataset()
-  standardize(x_train)
-  standardize(x_test)
+  #x_train,x_test,y_train,y_test = process_gamma_dataset()
+  x_train,x_test,y_train,y_test = mnist()
+
+  #standardize(x_train)
+  #standardize(x_test)
 
   #My model
   print("My model")

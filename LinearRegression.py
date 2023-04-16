@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-from PerformanceMetrics import accuracy
+from PerformanceMetrics import accuracy, MSE
 from Utils import to_categorical
-from DataSets import mnist
+from DataSets import mnist, process_gpu_running_time
 from sklearn.linear_model import LinearRegression as LR
 from time import time
 
@@ -64,6 +64,24 @@ def classification_():
   print("accuracy: {:.5f}".format(accuracy(y_test, pred)))
 
 def regression_():
+  x_train,x_test,y_train,y_test = process_gpu_running_time()
+
+  print("My model:")
+  t0 = time()
+  model = LinearRegression()
+  model.fit(x_train,y_train)
+  print("MSE = ", MSE(y_test, model.predict(x_test)))
+  print("Elapse time = {:.5f}".format(time() - t0))
+
+  print("\nSKLEARN model:")
+  t0 = time()
+  model = LR()
+  model.fit(x_train,y_train)
+  #Try to predict from made up data
+  print("MSE = ", MSE(y_test, model.predict(x_test)))
+  print("Elapse time = {:.5f}".format(time() - t0))
+
+def regression__():
   print("Using Pecan.txt for regression:")
   #Read data
   df = pd.read_csv("Pecan.txt", delimiter="\t")
@@ -72,22 +90,6 @@ def regression_():
   X = df.values[:, range(1, len(df.columns)-1)]
   Y = df.values[:, len(df.columns)-1]
   newData = [[120,5,80], [20,40,15]]
-
-  print("My model:")
-  t0 = time()
-  model = LinearRegression()
-  model.fit(X,Y)
-  #Try to predict from made up data
-  print("model predictions:", model.predict(newData))
-  print("Elapse time = {:.5f}".format(time() - t0))
-
-  print("\nSKLEARN model:")
-  t0 = time()
-  model = LR()
-  model.fit(X,Y)
-  #Try to predict from made up data
-  print("model predictions:", model.predict(newData))
-  print("Elapse time = {:.5f}".format(time() - t0))
 
 if __name__ == '__main__':
   regression_()
