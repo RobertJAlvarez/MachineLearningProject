@@ -1,13 +1,9 @@
 import numpy as np
 from PerformanceMetrics import accuracy
 from DataSets import process_gamma_dataset, mnist
-from Utils import to_categorical
+from Utils import to_categorical, standardize
 from sklearn.linear_model import LogisticRegression as LR
 from time import time
-
-def standardize(x):
-  for i in range(x.shape[1]):
-    x[:,i] = (x[:,i] - np.mean(x[:,i]))/np.std(x[:,i])
 
 class LogisticRegression:
   def P_(self,X,B):
