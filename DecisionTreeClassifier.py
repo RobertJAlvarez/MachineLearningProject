@@ -53,21 +53,16 @@ class DecisionTreeClassifier:
   def split_feature_DT(self, x_train, y_train, feature_idx):
     self.branches = dict()
     self.feature_idx = feature_idx
-
     #Get all rows for feature selected
     sub_x = x_train[:,feature_idx]
-
     #If the attribute is numeric we use the mean, if it is categorical we use the unique values
     if isinstance(sub_x[0], (np.integer, np.floating)):
       self.isnumeric = True
-
       #Split using the mean
       self.break_point = np.mean(sub_x)
-
       for i in range(2):
         new_depth = None if self.max_depth == None else self.max_depth-1
         dt = DecisionTreeClassifier(splitter=self.splitter, max_depth=new_depth)
-
         #Add dt into the tree and get the indices for the left or right branch
         if i == 0:
           new_idxs = sub_x <= self.break_point
@@ -75,7 +70,6 @@ class DecisionTreeClassifier:
         else:
           new_idxs = sub_x > self.break_point
           self.branches["g"] = dt
-
         #If max_depth is 1 or if only one y value is left, we create the leafs
         new_y = y_train[new_idxs]
         if self.max_depth == 1 or np.unique(new_y).shape[0]==1:
@@ -84,25 +78,19 @@ class DecisionTreeClassifier:
           dt.pred_val = calc_predict(new_y)[0]
         else:
           dt.fit(x_train[new_idxs], new_y)
-
     #If the attribute is categorical we use its different possible values
     else:
       self.isnumeric = False
-
       #Get all possible classification values from sub_x
       options = np.unique(sub_x)
-
       #Make a branch for each option
       for option in options:
         new_depth = None if self.max_depth == None else self.max_depth-1
         dt = DecisionTreeClassifier(splitter=self.splitter, max_depth=new_depth)
-
         #Add dt as a branch
         self.branches[option] = dt
-
         new_idxs = sub_x==option
         new_y = y_train[new_idxs]
-
         #If max_depth is 1 or if only one y value is left, we create the leafs
         if self.max_depth == 1 or np.unique(new_y).shape[0]==1:
           #Set dt as a leaf and fill in its attributes
