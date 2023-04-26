@@ -48,5 +48,5 @@ def relu(x):
   return np.maximum(np.array([[0]]),x)
 
 def sigmoid(x):
-  return 1./(1.+exp(-x))
+  return 1./(1.+np.exp(-x))
 

@@ -16,10 +16,12 @@ class LogisticRegression:
     betas = np.zeros((X.shape[1],1))  #We have as many betas as we have attributes
     y = np.reshape(y_train,(-1,1))    #Reshape y_train so it is a 1 column matrix
     for _ in range(self.max_iter):
-      p = self.sigmoid(np.dot(X,betas))
+      p = sigmoid(np.dot(X,betas))
       W = p*(1-p)
-      temp = np.linalg.inv(np.matmul(X.T, W*X))
-      new_betas = betas + np.matmul(np.matmul(temp,X.T),(y-p))
+      XTWX = np.matmul(X.T, W*X)
+      temp = np.matmul(np.linalg.inv(XTWX),X.T)
+      new_betas = betas + np.matmul(temp,(y-p))
+      print(np.sum(abs(new_betas-betas)) < self.tol)
       if np.sum(abs(new_betas-betas)) < self.tol: break
       betas = new_betas
     self.intercept_ = betas[0,0]
@@ -29,7 +31,7 @@ class LogisticRegression:
     X = np.c_[np.ones((x_test.shape[0],1)),x_test]
     betas = np.hstack((np.reshape(self.intercept_,(-1)),self.coef_))
     z = np.dot(X,betas)
-    return (self.sigmoid(z)>0.5).astype(int)
+    return (sigmoid(z)>0.5).astype(int)
 
   def __str__(self):
     return '{}(max_iter={:03}, penalty={})'.format(self.__class__.__name__,self.max_iter,self.penalty)
