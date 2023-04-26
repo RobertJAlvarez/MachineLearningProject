@@ -2,13 +2,10 @@ import numpy as np
 from PerformanceMetrics import accuracy
 from DataSets import process_gamma_dataset
 from sklearn.linear_model import LogisticRegression as LR
-from Utils import standardize
+from Utils import standardize, sigmoid
 from time import time
 
 class LogisticRegression:
-  def sigmoid(self, z):
-    return 1/(1+np.exp(-z))
-
   def __init__(self, penalty=None, tol=1e-4, max_iter=100):
     self.penalty = penalty
     self.tol = tol
