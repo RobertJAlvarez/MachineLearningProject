@@ -1,7 +1,6 @@
 import numpy as np
 from DataSets import process_gpu_running_time
 from sklearn.neural_network import MLPRegressor as MLPR
-#from PerformanceMetrics import MSE
 from Utils import relu
 from time import time
 from sklearn.metrics import mean_squared_error as MSE
