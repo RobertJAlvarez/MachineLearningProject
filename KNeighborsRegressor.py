@@ -37,7 +37,7 @@ class KNeighborsRegressor:
 if __name__ == '__main__':
   print("Using Pecan.txt for regression:")
   #Read data
-  df = pd.read_csv("Pecan.txt", delimiter="\t")
+  df = pd.read_csv("./datasets/Pecan.txt", delimiter="\t")
 
   #Remove first and last column
   X = df.values[:, range(1, len(df.columns)-1)]
