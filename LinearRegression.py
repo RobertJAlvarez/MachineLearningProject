@@ -51,6 +51,15 @@ class LinearRegression:
       self.intercept_ = np.reshape(self.intercept_,(-1))
 
   def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
+    """
+    Calculate predicted values as X(X^T X)^-1 X^T Y.
+
+    Args:
+        x_test (NumNPArrayNxM): _description_
+
+    Returns:
+        NumNPArray: _description_
+    """
     ny_cols = self.intercept_.shape[0]
     if ny_cols == 1:
       pred = np.matmul(x_test,self.coef_) + self.intercept_

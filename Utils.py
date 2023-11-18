@@ -13,7 +13,8 @@ def standardize(x: FloatNPArrayNxM) -> FloatNPArrayNxM:
     x[:,i] = (x[:,i] - np.mean(x[:,i]))/np.std(x[:,i])
 
 class LabelEncoder:
-  """Class use to encode y values from 0 to n_classes-1, where n_classes is the
+  """
+  Class use to encode y values from 0 to n_classes-1, where n_classes is the
   number of unique y values.
 
   Attributes
@@ -37,7 +38,8 @@ class LabelEncoder:
     self.classes_ = np.empty((0))
 
   def fit(self, data: ArrayLike) -> None:
-    """ Find the k unique values on the data and save them in classes_ attribute.
+    """
+    Find the k unique values on the data and save them in classes_ attribute.
 
     Args:
         data (ArrayLike): _description_
@@ -51,7 +53,8 @@ class LabelEncoder:
     return self.transform(data)
 
   def transform(self, data: ArrayLike) -> IntNPArray:
-    """ It use classes_ to encode each data value to the respective index in the array.
+    """
+    It use classes_ to encode each data value to the respective index in the array.
 
     Args:
         data (ArrayLike): _description_
@@ -86,7 +89,8 @@ class LabelEncoder:
     return temp
 
 def relu(x: FloatNPArray) -> FloatNPArray:
-  """ Return the maximum number between 0 and x for each value of x.
+  """
+  Return the maximum number between 0 and x for each value of x.
 
   Args:
       x (FloatNPArray): _description_
@@ -97,7 +101,8 @@ def relu(x: FloatNPArray) -> FloatNPArray:
   return np.maximum(np.array([[0.]]),x)
 
 def sigmoid(x: FloatNPArray) -> FloatNPArray:
-  """ Returns 1/(1+exp(-z)) for each value of z.
+  """
+  Returns 1/(1+exp(-z)) for each value of z.
 
   Args:
       x (FloatNPArray): _description_

@@ -29,6 +29,15 @@ class LogisticRegression:
     self.max_iter = max_iter
 
   def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike, alpha: float = 0.001) -> None:
+    """
+    Use Newton method for optimization of beta values. Formula to update beta is
+    beta_(i+1) = beta_i + (X^T WX)^-1 X^T (y-p)
+
+    Args:
+        x_train (NumNPArrayNxM): _description_
+        y_train (ArrayLike): _description_
+        alpha (float, optional): _description_. Defaults to 0.001.
+    """
     X = np.c_[np.ones((x_train.shape[0],1)),x_train]  #Add a column of 1's at the beginning of the data to calculate y intercept
     betas = np.zeros((X.shape[1],1))  #We have as many betas as we have attributes
     y = np.reshape(y_train,(-1,1))    #Reshape y_train so it is a 1 column matrix
@@ -46,6 +55,15 @@ class LogisticRegression:
     self.coef_ = betas[1:,0]
 
   def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
+    """
+    Predict y values as sigmoid(XB)>0.5.
+
+    Args:
+        x_test (NumNPArrayNxM): _description_
+
+    Returns:
+        NumNPArray: _description_
+    """
     X = np.c_[np.ones((x_test.shape[0],1)),x_test]
     betas = np.hstack((np.reshape(self.intercept_,(-1)),self.coef_))
     z = np.dot(X,betas)

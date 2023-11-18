@@ -9,7 +9,6 @@ class KNeighborsRegressor:
   Extension of NearestNeighbor to be use as a regressor. Regression is done by
   getting the k closest point at taking the average of each dimension.
   """
-  # Predict class of test data
   def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
     """
     Prediction is done with the closest k points by taking the average of each

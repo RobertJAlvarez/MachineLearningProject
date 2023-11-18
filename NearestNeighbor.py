@@ -34,7 +34,6 @@ class NearestNeighbor(ABC):
     self.k = k
     self.weighted = weighted
 
-  # Fit model parameters to training data
   def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike, regression: bool = False) -> None:
     """
     Save x_train and y_train regardless of regression boolean value. If regression=False
@@ -50,9 +49,9 @@ class NearestNeighbor(ABC):
     if not regression:
       self.classes_ = np.unique(y_train)
 
-  # Predict class of test data
   def get_closest_k(self, x_test: NumNPArrayNxM) -> NumNPArray:
-    """Calculate and return the k nearest neighbors for each x_test base on the x_train
+    """
+    Calculate and return the k nearest neighbors for each x_test base on the x_train
     values saved when calling fit.
 
     Args:

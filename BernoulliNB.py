@@ -45,7 +45,7 @@ class BernoulliNB:
     else:
       self.alpha = -1.0
 
-  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike) -> None: # Fit model parameters to training data
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike) -> None:
     if self.binarize is not None:
       x_train = (x_train>self.binarize).astype(int)
 
@@ -68,7 +68,7 @@ class BernoulliNB:
     self.pac0 = 1-self.pac1
     self.class_log_prior_ = np.log(pc)
 
-  def predict(self, x_test: NumNPArrayNxM) -> ArrayLike: # Predict class of test data
+  def predict(self, x_test: NumNPArrayNxM) -> ArrayLike:
     if self.binarize is not None:
       x_test = (x_test>self.binarize).astype(int)
 

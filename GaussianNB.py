@@ -34,11 +34,18 @@ class GaussianNB:
     Use gauss distribution assumption it calculate the conditional probability
     and take the maximum argument from all probabilities.
   """
-  # Constructor
   def __init__(self, var_smoothing: float = 1e-09) -> None:
     self.epsilon_ = var_smoothing
 
   def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike) -> None:
+    """
+    Get all possible predict values, for each class it calculate the variance
+    and mean of each attribute.
+
+    Args:
+        x_train (NumNPArrayNxM): _description_
+        y_train (ArrayLike): _description_
+    """
     self.classes_ = np.sort(np.unique(y_train))
     self.var_ = np.empty((self.classes_.shape[0],x_train.shape[1]))
     self.theta_ = np.empty((self.classes_.shape[0],x_train.shape[1]))
@@ -54,6 +61,16 @@ class GaussianNB:
     self.class_prior_ = np.log(pc)
 
   def predict(self, x_train: NumNPArrayNxM) -> ArrayLike:
+    """
+    We predict each class probability as log(P(y)+∑𝑃(Xi|y) where log(P(y) is
+    self.class_prior_ and P(Xi|y) = 1/(sigma*sqrt(2pi))*exp(-(X-mu_y)^2/2sigma^2)
+
+    Args:
+        x_train (NumNPArrayNxM): _description_
+
+    Returns:
+        ArrayLike: _description_
+    """
     np.seterr(divide = 'ignore')
     probs = np.empty((x_test.shape[0],self.classes_.shape[0]))
     t = 1./np.sqrt(2.*pi)

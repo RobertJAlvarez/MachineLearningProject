@@ -2,7 +2,8 @@ import numpy as np
 from NPTypes import NumNPArray
 
 def precision(y: NumNPArray, p: NumNPArray) -> np.float64:
-  """ Calculate precision between ground truth and estimates.
+  """
+  Calculate precision between ground truth and estimates.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
@@ -14,7 +15,8 @@ def precision(y: NumNPArray, p: NumNPArray) -> np.float64:
   return np.sum(y*p)/np.sum(p)
 
 def recall(y: NumNPArray, p: NumNPArray) -> np.float64:
-  """ Calculate recall between ground truth and estimates.
+  """
+  Calculate recall between ground truth and estimates.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
@@ -26,7 +28,8 @@ def recall(y: NumNPArray, p: NumNPArray) -> np.float64:
   return np.sum(y*p)/np.sum(y)
 
 def f1(y: NumNPArray, p: NumNPArray) -> np.float64:
-  """ Calculate f1 score between ground truth and estimates.
+  """
+  Calculate f1 score between ground truth and estimates.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
@@ -40,7 +43,8 @@ def f1(y: NumNPArray, p: NumNPArray) -> np.float64:
   return 2*pr*r/(pr+r)
 
 def accuracy(y: NumNPArray, p: NumNPArray) -> np.float64:
-  """ Calculate accuracy between ground truth and estimates.
+  """
+  Calculate accuracy between ground truth and estimates.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
@@ -52,7 +56,8 @@ def accuracy(y: NumNPArray, p: NumNPArray) -> np.float64:
   return np.sum(y==p)/len(y)
 
 def specificity(y: NumNPArray, p: NumNPArray) -> np.float64:
-  """ Calculate specificity between ground truth and estimates.
+  """
+  Calculate specificity between ground truth and estimates.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
@@ -64,7 +69,8 @@ def specificity(y: NumNPArray, p: NumNPArray) -> np.float64:
   return np.sum((1-y)*(1-p))/np.sum(y==p)
 
 def confusion_matrix(y: NumNPArray, p: NumNPArray) -> list[list[int]]:
-  """ Compute confusion matrix to evaluate the accuracy of a classification.
+  """
+  Compute confusion matrix to evaluate the accuracy of a classification.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
@@ -84,7 +90,8 @@ def confusion_matrix(y: NumNPArray, p: NumNPArray) -> list[list[int]]:
   return m
 
 def MAE(y: NumNPArray, p: NumNPArray) -> np.float64:
-  """ Calculate Mean Absolute Error between ground truth and estimates.
+  """
+  Calculate Mean Absolute Error between ground truth and estimates.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
@@ -96,7 +103,8 @@ def MAE(y: NumNPArray, p: NumNPArray) -> np.float64:
   return np.sum(np.absolute(y-p))/y.shape[0]
 
 def MSE(y: NumNPArray, p: NumNPArray) -> np.float64:
-  """ Calculate Mean Square Error between ground truth and estimates.
+  """
+  Calculate Mean Square Error between ground truth and estimates.
 
   Args:
       y (NumNPArray): Ground truth (correct) target values.
