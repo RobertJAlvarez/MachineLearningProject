@@ -4,26 +4,32 @@ from sklearn.neighbors import KNeighborsRegressor as KNN
 from time import time
 
 class KNeighborsRegressor:
+  """
+  Extension of NearestNeighbor to be use as a regressor. Regression is done by
+  getting the k closest point at taking the average of each dimension.
+  """
   # Constructor
   def __init__(self,k=1,weighted=False):
-    self.k = k
-    self.weighted = weighted
+    super().__init__(k=k,weighted=weighted)
 
   # Fit model parameters to training data
   def fit(self,x_train,y_train):
-    self.x_train = x_train
-    self.y_train = y_train
+    super().fit(x_train,y_train,regression=True)
 
   # Predict class of test data
   def predict(self,x_test):
-    # Improved version using the fact that (a-b)**2 = a**2 - 2ab + b**2
-    dist1 = np.sum(x_test**2,axis=1,keepdims=True)
-    dist2 = -2*np.matmul(x_test,self.x_train.T)
-    dist3 = np.sum(self.x_train.T**2,axis=0,keepdims=True) # This part is not really necessary, since it does not depend on x_test
-    dist = dist1+dist2+dist3
+    """Prediction is done with the closest k points by taking the average of each
+    dimension for unweighted distance and the average with the weight of
+    1/dist(x,x'') for weighted distance.
 
+    Args:
+        x_test (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     # Distance matrix is created, get the k closest elements
-    minIdxs = np.argpartition(dist, kth=self.k, axis=-1)[:,:self.k]
+    minIdxs, dist = super().get_closest_k(x_test)
 
     if self.weighted:
       weights = np.array([1/dist[irow,rowIdx] for irow,rowIdx in enumerate(minIdxs)])

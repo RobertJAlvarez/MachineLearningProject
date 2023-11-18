@@ -4,16 +4,50 @@ from DataSets import mnist
 from sklearn.naive_bayes import BernoulliNB as BNB
 from time import time
 
+import numpy.typing as npt
+from Utils import NumNPArrayNxM
+
 class BernoulliNB:
+  """
+  Module use to predict y values from binarize X data to calculate conditional
+  probabilities as P(y|X) = P(X=1|y)X + (1-P(X=1|y))(1-X).
+  ...
+  Atributes
+  ---------
+  self.binarize : float
+    Value use to binarize data. If None is given we assume data is already
+    binarized.
+  self.alpha : float
+    Value use as smoother in the conditional probabilities.
+  self.classes_ : shape=(n_classes, )
+    Numpy array with all classes sorted in ascending order.
+  self.pac1 : shape = (n_classes, n_attributes, )
+    2D numpy array with the conditional probabilities of such aattribute in
+    class being equal to 1.
+  self.pac0 : shape = (n_classes, n_attributes, )
+    Same as self.pac1 but for value 0.
+  self.class_prior_ : shape = (n_classes, )
+    Log probability for getting a class.
+
+   Methods
+  ---------
+  fit(x_train, y_train)
+    Calcualte the mean occurance of each class and the probability of each
+    attribute beeing 1 or zero given the class.
+  predict(x_test)
+    Using probability of each class and the the prbability of 1 or 0 for each
+    attribute in each class we predict using the following formula:
+    P(X|y) = P(X=1|y)X + (1-P(X=1|y))(1-X).
+  """
   # Constructor
-  def __init__(self, alpha=1.0, force_alpha=False, binarize=0.0):
+  def __init__(self, alpha: float = 1.0, force_alpha: bool = False, binarize: float | None = None) -> None:
     self.binarize = binarize
     if alpha is not None:
       self.alpha = 1e-10 if force_alpha and alpha<1e-10 else alpha
     else:
       self.alpha = -1.0
 
-  def fit(self, x_train, y_train): # Fit model parameters to training data
+  def fit(self, x_train: NumNPArrayNxM, y_train: npt.ArrayLike) -> None: # Fit model parameters to training data
     if self.binarize is not None:
       x_train = (x_train>self.binarize).astype(int)
 

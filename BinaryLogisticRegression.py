@@ -6,7 +6,24 @@ from Utils import standardize, sigmoid
 from time import time
 
 class LogisticRegression:
-  def __init__(self, penalty=None, tol=1e-4, max_iter=100):
+  """
+  Moduel use for binary classification task. Optimization use is Newton method.
+  ...
+  Atributes
+  ---------
+  self.intercept_ : shape=(1, )
+    Real value numbers that represent the bias of each class.
+  self.coef_ : shape=(n_attributes, )
+    Real value numbers that represent the weights of each class.
+
+   Methods
+  ---------
+  fit(x_train, y_train)
+    Calcualte intercept and beta coefficients using Newtons method.
+  predict(x_test)
+    Calculate predict values as sigmoid(XB)>0.5.
+  """
+  def __init__(self, penalty=None, tol=1e-4, max_iter=100) -> None:
     self.penalty = penalty
     self.tol = tol
     self.max_iter = max_iter
@@ -61,4 +78,3 @@ if __name__ == '__main__':
   pred = model.predict(x_test)
   print("Elapse time = {:.5f}".format(time() - t0))
   print("accuracy: {:.5f}".format(accuracy(y_test, pred)))
-

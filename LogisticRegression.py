@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression as LR
 from time import time
 
 class LogisticRegression:
-  def P_(self,X,B):
+  def __P(self,X,B):
     N = X.shape[0]  #Number of object in training set
     P = X.shape[1]
     a = np.empty((N,self.K))
@@ -16,7 +16,7 @@ class LogisticRegression:
     return np.reshape(a,(-1,1))
     #return np.reshape(a,(-1,1),order='F')
 
-  def __init__(self, tol=1e-4, max_iter=100):
+  def __init__(self, tol=1e-4, max_iter=100) -> None:
     self.tol = tol
     self.max_iter = max_iter
 
@@ -65,7 +65,7 @@ class LogisticRegression:
   def predict(self, x_test):
     X = np.c_[np.ones((x_test.shape[0],1)),x_test]
     B = np.hstack((self.intercept_,self.coef_)).reshape((-1))
-    p = np.reshape(self.P_(X,B),(-1,self.K))
+    p = np.reshape(self.__P(X,B),(-1,self.K))
     return np.argmax(p,axis=1)
 
   def __str__(self):
@@ -97,4 +97,3 @@ if __name__ == '__main__':
   pred = model.predict(x_test)
   print("Elapse time = {:.5f}".format(time() - t0))
   print("accuracy: {:.5f}".format(accuracy(y_test, pred)))
-

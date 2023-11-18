@@ -2,29 +2,38 @@ import numpy as np
 from PerformanceMetrics import accuracy
 from DataSets import mnist
 from sklearn.neighbors import KNeighborsClassifier as KNN
+from NearestNeighbor import NearestNeighbor
 
-class KNeighborsClassifier:
+class KNeighborsClassifier(NearestNeighbor):
+  """
+  Extension of NearestNeighbor to be use as a classifier. Classification is done
+  by chossing the most common target value from the k nearest neighbors.
+  """
   # Constructor
-  def __init__(self,k=1,weighted = False):
-    self.k = k
-    self.weighted = weighted
+  def __init__(self,k=1, weighted=False):
+    super().__init__(k=k, weighted=weighted)
 
   # Fit model parameters to training data
   def fit(self,x_train,y_train):
-    self.x_train = x_train
-    self.y_train = y_train
-    self.classes_ = np.unique(y_train)
+    super().fit(x_train,y_train)
 
   # Predict class of test data
   def predict(self,x_test):
-    # Improved version using the fact that (a-b)**2 = a**2 - 2ab + b**2
-    dist1 = np.sum(x_test**2,axis=1,keepdims=True)
-    dist2 = -2*np.matmul(x_test,self.x_train.T)
-    dist3 = np.sum(self.x_train.T**2,axis=0,keepdims=True) # This part is not really necessary, since it does not depend on x_test
-    dist = dist1+dist2+dist3
+    """Get k nearest neighbors by calling get_closest_k from the super class with
+    x_test as parameter. For unweighted distance, use those indeces to the k closes
+    elements to get the mode out of the y value of those indeces. For weighted
+    distance, use those indeces to get the target values and predict the maximum
+    argument of the class with largest number where the number of each class
+    is calculates by adding 1/dist(x,x'') to the class where x'' belongs to.
 
+    Args:
+        x_test (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     # Distance matrix is created, get the k closest elements
-    minIdxs = np.argpartition(dist, kth=self.k, axis=-1)[:,:self.k]
+    minIdxs, dist = super().get_closest_k(x_test)
 
     # Build weight array with the votes and choose the one with the highest one to predict
     possibles = np.zeros((dist.shape[0],self.classes_.shape[0]))
@@ -54,4 +63,3 @@ if __name__ == '__main__':
 
   print("SKLEARN model:")
   run_knn_model(KNN)
-

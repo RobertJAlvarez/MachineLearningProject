@@ -6,7 +6,27 @@ from sklearn.linear_model import LinearRegression as LR
 from time import time
 
 class LinearRegression:
-  def __init__(self):
+  """
+  Module use for regression and classification. If used for classification,
+  a one-hot representation neeeds to be pass.
+  ...
+  Atributes
+  ---------
+  self.intercept_ : shape=(n_classes, )
+    Real value numbers that represent the bias of each class.
+  self.coef_ : shape=(n_classes, n_attributes, )
+    Real value numbers that represent the weights of each class.
+
+   Methods
+  ---------
+  fit(x_train, y_train)
+    Calcualte beta values as (X^T X)^-1 X^T Y and save them in self.intercept_
+    and self.coef_.
+  predict(x_test)
+    Use the self.intercept_ and self.coef_ to calculate the predicted values as
+    X(X^T X)^-1 X^T Y.
+  """
+  def __init__(self) -> None:
     pass
 
   #(X.TX)^-1 X.T y

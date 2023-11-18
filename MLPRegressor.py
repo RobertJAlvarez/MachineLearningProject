@@ -6,7 +6,7 @@ from time import time
 from sklearn.metrics import mean_squared_error as MSE
 
 class MLPRegressor:
-  def __init__(self, hidden_layer_sizes=(100,), activation='relu', solver='sgd', learning_rate_init=0.001, momentum=0.9):
+  def __init__(self, hidden_layer_sizes=(100,), activation='relu', solver='sgd', learning_rate_init=0.001, momentum=0.9) -> None:
     self.hidden_layer_sizes = hidden_layer_sizes
     self.act = activation
     self.solv = solver

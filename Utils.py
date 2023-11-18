@@ -1,35 +1,77 @@
 import numpy as np
 import numpy.typing as npt
+from nptyping import NDArray, Shape, Float, Integer, Number, Obj
 
-NDArrayInt = npt.NDArray[np.int_]
-NDArrayFloat = npt.NDArray[np.float_]
+NPArrayNxM = NDArray[Shape["N, M"], Obj]
 
-def to_categorical(y):
+NumNPArrayNxM = NDArray[Shape["N, M"], Number]
+NumNPArray = NDArray[Shape["N"], Number]
+
+FloatNPArrayNxM = NDArray[Shape["N, M"], Float]
+FloatNPArrayNxN = NDArray[Shape["N, N"], Float]
+FloatNPArray = NDArray[Shape["N"], Float]
+
+IntNPArrayNxM = NDArray[Shape["N, M"], Integer]
+IntNPArray = NDArray[Shape["N"], Integer]
+
+def to_categorical(y: IntNPArray) -> IntNPArray:
   y_vals = np.unique(y)
   cat_y = np.empty(shape=(y.shape[0],y_vals.shape[0]))
   for i,y_val in enumerate(y_vals):
     cat_y[:,i] = (y==y_val).astype(int)
   return cat_y
 
-def standardize(x):
+def standardize(x: FloatNPArrayNxM) -> FloatNPArrayNxM:
   for i in range(x.shape[1]):
     x[:,i] = (x[:,i] - np.mean(x[:,i]))/np.std(x[:,i])
 
 class LabelEncoder:
+  """Class use to encode y values from 0 to n_classes-1, where n_classes is the
+  number of unique y values.
+
+  Attributes
+  ----------
+  classes_ : numpy array of shape (n_classes,)
+    classes_ is a n_classes entries numpy array where each entry have a unique
+    y value
+
+   Methods
+  ---------
+  fit(data)
+    Find the k unique values on the data and save them in classes_ attribute.
+  transform(data)
+    Transform change the targest values to the respective encode number.
+  inverse_transform(data)
+    Reverse the transformer by mapping the numbers from 0 to n_classes to its
+    original value.
+  """
   # Constructor
-  def __init__(self):
+  def __init__(self) -> None:
     self.classes_ = np.empty((0))
 
-  def fit(self, data):
+  def fit(self, data: npt.ArrayLike) -> None:
+    """ Find the k unique values on the data and save them in classes_ attribute.
+
+    Args:
+        data (npt.ArrayLike): _description_
+    """
     self.classes_ = np.unique(data)
 
-  def fit_transform(self, data):
-    #Get the classes if they haven't being set
+  def fit_transform(self, data: npt.ArrayLike) -> IntNPArray:
+    # Get the classes if they haven't being set
     if self.classes_.shape[0] == 0:
       self.fit(data)
     return self.transform(data)
 
-  def transform(self, data):
+  def transform(self, data: npt.ArrayLike) -> IntNPArray:
+    """ It use classes_ to encode each data value to the respective index in the array.
+
+    Args:
+        data (npt.ArrayLike): _description_
+
+    Returns:
+        IntNPArray: _description_
+    """
     if isinstance(data, list):
       data = np.array(data, self.classes_.dtype)
     temp = np.empty(data.shape,np.int32)
@@ -37,7 +79,15 @@ class LabelEncoder:
       temp[c==data] = i
     return temp
 
-  def inverse_transform(self, data):
+  def inverse_transform(self, data: IntNPArray) -> npt.ArrayLike:
+    """ Replace each data values to what is in classes_ by using each data value as an index to classes_.
+
+    Args:
+        data (IntNPArray): _description_
+
+    Returns:
+        npt.ArrayLike: _description_
+    """
     if isinstance(data, list):
       shape = len(data)
     else:
@@ -48,9 +98,24 @@ class LabelEncoder:
       temp[i==data] = c
     return temp
 
-def relu(x):
-  return np.maximum(np.array([[0]]),x)
+def relu(x: FloatNPArray) -> FloatNPArray:
+  """ Return the maximum number between 0 and x for each value of x.
 
-def sigmoid(x):
+  Args:
+      x (FloatNPArray): _description_
+
+  Returns:
+      FloatNPArray: Maximum number between 0 and x for each value of x.
+  """
+  return np.maximum(np.array([[0.]]),x)
+
+def sigmoid(x: FloatNPArray) -> FloatNPArray:
+  """ Returns 1/(1+exp(-z)) for each value of z.
+
+  Args:
+      x (FloatNPArray): _description_
+
+  Returns:
+      FloatNPArray: 1/(1+exp(-z)) for each value of z.
+  """
   return 1./(1.+np.exp(-x))
-

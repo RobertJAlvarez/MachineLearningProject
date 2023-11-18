@@ -8,7 +8,7 @@ class LogisticRegression:
   def sigmoid(self, z):
     return 1/(1+np.exp(-z))
 
-  def __init__(self, penalty=None, tol=1e-4, max_iter=100):
+  def __init__(self, penalty=None, tol=1e-4, max_iter=100) -> None:
     self.penalty = penalty
     self.tol = tol
     self.max_iter = max_iter
