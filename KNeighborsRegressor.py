@@ -1,7 +1,5 @@
 import numpy as np
 import pandas as pd
-from PerformanceMetrics import MSE
-from DataSets import process_gpu_running_time
 from sklearn.neighbors import KNeighborsRegressor as KNN
 from time import time
 
@@ -59,4 +57,3 @@ if __name__ == '__main__':
     model.fit(X,Y)
     print("Prediction = ", model.predict(newData))
     print("Elapse time = {:.5f}".format(time() - t0))
-

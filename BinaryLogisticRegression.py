@@ -22,7 +22,8 @@ class LogisticRegression:
       temp = np.matmul(np.linalg.inv(XTWX),X.T)
       new_betas = betas + np.matmul(temp,(y-p))
       print(np.sum(abs(new_betas-betas)) < self.tol)
-      if np.sum(abs(new_betas-betas)) < self.tol: break
+      if np.sum(abs(new_betas-betas)) < self.tol:
+        break
       betas = new_betas
     self.intercept_ = betas[0,0]
     self.coef_ = betas[1:,0]

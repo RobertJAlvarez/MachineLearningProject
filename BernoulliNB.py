@@ -8,13 +8,13 @@ class BernoulliNB:
   # Constructor
   def __init__(self, alpha=1.0, force_alpha=False, binarize=0.0):
     self.binarize = binarize
-    if alpha != None:
+    if alpha is not None:
       self.alpha = 1e-10 if force_alpha and alpha<1e-10 else alpha
     else:
       self.alpha = -1.0
 
   def fit(self, x_train, y_train): # Fit model parameters to training data
-    if self.binarize != None:
+    if self.binarize is not None:
       x_train = (x_train>self.binarize).astype(int)
 
     self.classes_ = np.sort(np.unique(y_train))
@@ -37,7 +37,7 @@ class BernoulliNB:
     self.class_log_prior_ = np.log(pc)
 
   def predict(self, x_test): # Predict class of test data
-    if self.binarize != None:
+    if self.binarize is not None:
       x_test = (x_test>self.binarize).astype(int)
 
     x_test_0 = 1.0-x_test
@@ -66,4 +66,3 @@ if __name__ == '__main__':
   pred = model.predict(x_test)
   print("Elapse time = {:.5f}".format(time() - t0))
   print("accuracy: {:.5f}".format(accuracy(y_test, pred)))
-

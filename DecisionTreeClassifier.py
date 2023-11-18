@@ -61,7 +61,7 @@ class DecisionTreeClassifier:
       #Split using the mean
       self.break_point = np.mean(sub_x)
       for i in range(2):
-        new_depth = None if self.max_depth == None else self.max_depth-1
+        new_depth = None if self.max_depth is None else self.max_depth-1
         dt = DecisionTreeClassifier(splitter=self.splitter, max_depth=new_depth)
         #Add dt into the tree and get the indices for the left or right branch
         if i == 0:
@@ -85,7 +85,7 @@ class DecisionTreeClassifier:
       options = np.unique(sub_x)
       #Make a branch for each option
       for option in options:
-        new_depth = None if self.max_depth == None else self.max_depth-1
+        new_depth = None if self.max_depth is None else self.max_depth-1
         dt = DecisionTreeClassifier(splitter=self.splitter, max_depth=new_depth)
         #Add dt as a branch
         self.branches[option] = dt
@@ -101,15 +101,15 @@ class DecisionTreeClassifier:
 
   def fit(self, x_train, y_train, feature_idx=None):
     #If max_depth is less than 1 we fail
-    if self.max_depth != None and self.max_depth < 1:
+    if self.max_depth is not None and self.max_depth < 1:
       raise InvalidParameterError("max_depth must be in the range [1,inf)")
 
     #feature_idx is out of bound we fail
-    if feature_idx != None and (feature_idx < 0 or feature_idx > x_train.shape[1]):
+    if feature_idx is not None and (feature_idx < 0 or feature_idx > x_train.shape[1]):
       raise InvalidParameterError(f"feature_idx must be in the range [0,{x_train.shape[1]}]")
 
     #Use feature index given or use splitter option to get one
-    if (feature_idx == None):
+    if (feature_idx is None):
       if self.splitter == "best":
         best_feature = best_feature_DT(x_train, y_train)
         self.split_feature_DT(x_train, y_train, best_feature)
