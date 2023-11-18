@@ -4,6 +4,7 @@ from DataSets import process_gamma_dataset
 from sklearn.linear_model import LogisticRegression as LR
 from Utils import standardize, sigmoid
 from time import time
+from NPTypes import NumNPArrayNxM, ArrayLike, NumNPArray
 
 class LogisticRegression:
   """
@@ -23,12 +24,11 @@ class LogisticRegression:
   predict(x_test)
     Calculate predict values as sigmoid(XB)>0.5.
   """
-  def __init__(self, penalty=None, tol=1e-4, max_iter=100) -> None:
-    self.penalty = penalty
+  def __init__(self, tol: float = 1e-4, max_iter: int = 100) -> None:
     self.tol = tol
     self.max_iter = max_iter
 
-  def fit(self, x_train, y_train, alpha=0.001):
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike, alpha: float = 0.001) -> None:
     X = np.c_[np.ones((x_train.shape[0],1)),x_train]  #Add a column of 1's at the beginning of the data to calculate y intercept
     betas = np.zeros((X.shape[1],1))  #We have as many betas as we have attributes
     y = np.reshape(y_train,(-1,1))    #Reshape y_train so it is a 1 column matrix
@@ -45,13 +45,13 @@ class LogisticRegression:
     self.intercept_ = betas[0,0]
     self.coef_ = betas[1:,0]
 
-  def predict(self, x_test):
+  def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
     X = np.c_[np.ones((x_test.shape[0],1)),x_test]
     betas = np.hstack((np.reshape(self.intercept_,(-1)),self.coef_))
     z = np.dot(X,betas)
     return (sigmoid(z)>0.5).astype(int)
 
-  def __str__(self):
+  def __str__(self) -> str:
     return '{}(max_iter={:03}, penalty={})'.format(self.__class__.__name__,self.max_iter,self.penalty)
 
 if __name__ == '__main__':

@@ -3,23 +3,17 @@ from PerformanceMetrics import accuracy
 from DataSets import mnist
 from sklearn.neighbors import KNeighborsClassifier as KNN
 from NearestNeighbor import NearestNeighbor
+from Utils import NumNPArrayNxM, NumNPArray
 
 class KNeighborsClassifier(NearestNeighbor):
   """
   Extension of NearestNeighbor to be use as a classifier. Classification is done
   by chossing the most common target value from the k nearest neighbors.
   """
-  # Constructor
-  def __init__(self,k=1, weighted=False):
-    super().__init__(k=k, weighted=weighted)
-
-  # Fit model parameters to training data
-  def fit(self,x_train,y_train):
-    super().fit(x_train,y_train)
-
   # Predict class of test data
-  def predict(self,x_test):
-    """Get k nearest neighbors by calling get_closest_k from the super class with
+  def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
+    """
+    Get k nearest neighbors by calling get_closest_k from the super class with
     x_test as parameter. For unweighted distance, use those indeces to the k closes
     elements to get the mode out of the y value of those indeces. For weighted
     distance, use those indeces to get the target values and predict the maximum
@@ -27,10 +21,10 @@ class KNeighborsClassifier(NearestNeighbor):
     is calculates by adding 1/dist(x,x'') to the class where x'' belongs to.
 
     Args:
-        x_test (_type_): _description_
+        x_test (NumNPArrayNxM): _description_
 
     Returns:
-        _type_: _description_
+        NumNPArray: _description_
     """
     # Distance matrix is created, get the k closest elements
     minIdxs, dist = super().get_closest_k(x_test)
@@ -46,7 +40,7 @@ class KNeighborsClassifier(NearestNeighbor):
 
     return self.classes_[np.argmax(possibles, axis=1)]
 
-def run_knn_model(knn_model):
+def run_knn_model(knn_model: KNeighborsClassifier | KNN) -> None:
   for weighted in [False,True]:
     for k in range(1,16,2):
       print('k =',k,'weighted =',weighted)

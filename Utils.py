@@ -1,18 +1,5 @@
 import numpy as np
-import numpy.typing as npt
-from nptyping import NDArray, Shape, Float, Integer, Number, Obj
-
-NPArrayNxM = NDArray[Shape["N, M"], Obj]
-
-NumNPArrayNxM = NDArray[Shape["N, M"], Number]
-NumNPArray = NDArray[Shape["N"], Number]
-
-FloatNPArrayNxM = NDArray[Shape["N, M"], Float]
-FloatNPArrayNxN = NDArray[Shape["N, N"], Float]
-FloatNPArray = NDArray[Shape["N"], Float]
-
-IntNPArrayNxM = NDArray[Shape["N, M"], Integer]
-IntNPArray = NDArray[Shape["N"], Integer]
+from NPTypes import IntNPArray, FloatNPArrayNxM, ArrayLike, FloatNPArray
 
 def to_categorical(y: IntNPArray) -> IntNPArray:
   y_vals = np.unique(y)
@@ -49,25 +36,25 @@ class LabelEncoder:
   def __init__(self) -> None:
     self.classes_ = np.empty((0))
 
-  def fit(self, data: npt.ArrayLike) -> None:
+  def fit(self, data: ArrayLike) -> None:
     """ Find the k unique values on the data and save them in classes_ attribute.
 
     Args:
-        data (npt.ArrayLike): _description_
+        data (ArrayLike): _description_
     """
     self.classes_ = np.unique(data)
 
-  def fit_transform(self, data: npt.ArrayLike) -> IntNPArray:
+  def fit_transform(self, data: ArrayLike) -> IntNPArray:
     # Get the classes if they haven't being set
     if self.classes_.shape[0] == 0:
       self.fit(data)
     return self.transform(data)
 
-  def transform(self, data: npt.ArrayLike) -> IntNPArray:
+  def transform(self, data: ArrayLike) -> IntNPArray:
     """ It use classes_ to encode each data value to the respective index in the array.
 
     Args:
-        data (npt.ArrayLike): _description_
+        data (ArrayLike): _description_
 
     Returns:
         IntNPArray: _description_
@@ -79,14 +66,14 @@ class LabelEncoder:
       temp[c==data] = i
     return temp
 
-  def inverse_transform(self, data: IntNPArray) -> npt.ArrayLike:
+  def inverse_transform(self, data: IntNPArray) -> ArrayLike:
     """ Replace each data values to what is in classes_ by using each data value as an index to classes_.
 
     Args:
         data (IntNPArray): _description_
 
     Returns:
-        npt.ArrayLike: _description_
+        ArrayLike: _description_
     """
     if isinstance(data, list):
       shape = len(data)

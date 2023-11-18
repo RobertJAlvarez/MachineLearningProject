@@ -4,16 +4,25 @@ from sklearn.neural_network import MLPRegressor as MLPR
 from Utils import relu
 from time import time
 from sklearn.metrics import mean_squared_error as MSE
+from typing import Sequence
+from NPTypes import NumNPArrayNxM, ArrayLike
 
 class MLPRegressor:
-  def __init__(self, hidden_layer_sizes=(100,), activation='relu', solver='sgd', learning_rate_init=0.001, momentum=0.9) -> None:
+  def __init__(
+    self,
+    hidden_layer_sizes: Sequence[int] = (100,),
+    activation: str = 'relu',
+    solver: str = 'sgd',
+    learning_rate_init: float = 0.001,
+    momentum: float = 0.9
+  ) -> None:
     self.hidden_layer_sizes = hidden_layer_sizes
     self.act = activation
     self.solv = solver
     self.lern_rate = learning_rate_init
     self.momentum = momentum
 
-  def fit(self, x_train, y_train):
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike) -> None:
     #Create spaces for weights and biasses
     self.coef_ = [np.random.randn(x_train.shape[1],self.hidden_layer_sizes[0])*np.sqrt(2./self.hidden_layer_sizes[0])]
     self.intercepts_ = [np.zeros((self.hidden_layer_sizes[0]))]
@@ -72,7 +81,7 @@ class MLPRegressor:
         change_b[i] = self.lern_rate*db[i] + self.momentum*change_b[i]
         self.intercepts_[i] -= change_b[i]
 
-  def predict(self, x_test):
+  def predict(self, x_test: NumNPArrayNxM) -> ArrayLike:
     H = np.matmul(x_test,self.coef_[0]) + self.intercepts_[0]
     for i in range(1,len(self.coef_)):
       H = relu(H)
@@ -99,4 +108,3 @@ if __name__ == '__main__':
   model.fit(x_train,y_train)
   print("MSE = ", MSE(y_test, model.predict(x_test)))
   print("Elapse time = {:.5f}".format(time() - t0))
-

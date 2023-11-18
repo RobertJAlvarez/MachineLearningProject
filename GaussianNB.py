@@ -4,6 +4,7 @@ from DataSets import mnist
 from sklearn.naive_bayes import GaussianNB as GNB
 from time import time
 from math import pi
+from Utils import NumNPArrayNxM, ArrayLike
 
 class GaussianNB:
   """
@@ -34,10 +35,10 @@ class GaussianNB:
     and take the maximum argument from all probabilities.
   """
   # Constructor
-  def __init__(self, var_smoothing=1e-09) -> None:
+  def __init__(self, var_smoothing: float = 1e-09) -> None:
     self.epsilon_ = var_smoothing
 
-  def fit(self, x_train, y_train): # Fit model parameters to training data
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike) -> None:
     self.classes_ = np.sort(np.unique(y_train))
     self.var_ = np.empty((self.classes_.shape[0],x_train.shape[1]))
     self.theta_ = np.empty((self.classes_.shape[0],x_train.shape[1]))
@@ -52,10 +53,10 @@ class GaussianNB:
       pc[i] = np.mean(ind)
     self.class_prior_ = np.log(pc)
 
-  def predict(self, x_test): # Predict class of test data
+  def predict(self, x_train: NumNPArrayNxM) -> ArrayLike:
     np.seterr(divide = 'ignore')
     probs = np.empty((x_test.shape[0],self.classes_.shape[0]))
-    t = 1.0/np.sqrt(2.0*pi)
+    t = 1./np.sqrt(2.*pi)
     for i in range(self.classes_.shape[0]):
       p = (t/self.var_[i])*np.exp(-0.5*((x_test-self.theta_[i])/self.var_[i])**2)
       probs[:,i] = np.sum(np.log(p),axis=1)
@@ -79,4 +80,3 @@ if __name__ == '__main__':
   pred = model.predict(x_test)
   print("Elapse time = {:.5f}".format(time() - t0))
   print("accuracy: {:.5f}".format(accuracy(y_test, pred)))
-

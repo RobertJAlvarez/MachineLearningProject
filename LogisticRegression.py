@@ -4,9 +4,10 @@ from DataSets import process_gamma_dataset, mnist
 from Utils import to_categorical, standardize
 from sklearn.linear_model import LogisticRegression as LR
 from time import time
+from NPTypes import NumNPArrayNxM, ArrayLike, NumNPArray
 
 class LogisticRegression:
-  def __P(self,X,B):
+  def __P(self, X: NumNPArrayNxM, B: NumNPArray) -> NumNPArray:
     N = X.shape[0]  #Number of object in training set
     P = X.shape[1]
     a = np.empty((N,self.K))
@@ -16,11 +17,11 @@ class LogisticRegression:
     return np.reshape(a,(-1,1))
     #return np.reshape(a,(-1,1),order='F')
 
-  def __init__(self, tol=1e-4, max_iter=100) -> None:
+  def __init__(self, tol: float = 1e-4, max_iter: int = 100) -> None:
     self.tol = tol
     self.max_iter = max_iter
 
-  def fit(self, x_train, y_train, alpha=0.001):
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike, alpha: float = 0.001) -> None:
     self.K = np.unique(y_train).shape[0]  #Number of classes
     K = self.K
     #Add a column of 1's at the beginning of the data to calculate y intercept
@@ -62,13 +63,13 @@ class LogisticRegression:
     #Get all betas that are not the intercepts and store it as a 2D array, 1 row per class coefficients
     self.coef_ = np.delete(B,list(range(0,B.shape[0],P)),axis=0).reshape((-1,P-1))
 
-  def predict(self, x_test):
+  def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
     X = np.c_[np.ones((x_test.shape[0],1)),x_test]
     B = np.hstack((self.intercept_,self.coef_)).reshape((-1))
     p = np.reshape(self.__P(X,B),(-1,self.K))
     return np.argmax(p,axis=1)
 
-  def __str__(self):
+  def __str__(self) -> str:
     return '{}(max_iter={:03})'.format(self.__class__.__name__,self.max_iter)
 
 if __name__ == '__main__':

@@ -3,9 +3,7 @@ from PerformanceMetrics import accuracy
 from DataSets import mnist
 from sklearn.naive_bayes import BernoulliNB as BNB
 from time import time
-
-import numpy.typing as npt
-from Utils import NumNPArrayNxM
+from Utils import NumNPArrayNxM, ArrayLike
 
 class BernoulliNB:
   """
@@ -47,7 +45,7 @@ class BernoulliNB:
     else:
       self.alpha = -1.0
 
-  def fit(self, x_train: NumNPArrayNxM, y_train: npt.ArrayLike) -> None: # Fit model parameters to training data
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike) -> None: # Fit model parameters to training data
     if self.binarize is not None:
       x_train = (x_train>self.binarize).astype(int)
 
@@ -70,7 +68,7 @@ class BernoulliNB:
     self.pac0 = 1-self.pac1
     self.class_log_prior_ = np.log(pc)
 
-  def predict(self, x_test): # Predict class of test data
+  def predict(self, x_test: NumNPArrayNxM) -> ArrayLike: # Predict class of test data
     if self.binarize is not None:
       x_test = (x_test>self.binarize).astype(int)
 

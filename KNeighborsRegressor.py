@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.neighbors import KNeighborsRegressor as KNN
+from Utils import NumNPArrayNxM, NumNPArray
 from time import time
 
 class KNeighborsRegressor:
@@ -8,25 +9,18 @@ class KNeighborsRegressor:
   Extension of NearestNeighbor to be use as a regressor. Regression is done by
   getting the k closest point at taking the average of each dimension.
   """
-  # Constructor
-  def __init__(self,k=1,weighted=False):
-    super().__init__(k=k,weighted=weighted)
-
-  # Fit model parameters to training data
-  def fit(self,x_train,y_train):
-    super().fit(x_train,y_train,regression=True)
-
   # Predict class of test data
-  def predict(self,x_test):
-    """Prediction is done with the closest k points by taking the average of each
+  def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
+    """
+    Prediction is done with the closest k points by taking the average of each
     dimension for unweighted distance and the average with the weight of
     1/dist(x,x'') for weighted distance.
 
     Args:
-        x_test (_type_): _description_
+        x_test (NumNPArrayNxM): _description_
 
     Returns:
-        _type_: _description_
+        NumNPArray: _description_
     """
     # Distance matrix is created, get the k closest elements
     minIdxs, dist = super().get_closest_k(x_test)

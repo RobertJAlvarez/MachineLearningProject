@@ -3,8 +3,10 @@ from PerformanceMetrics import accuracy
 from DataSets import process_gamma_dataset, mnist
 from sklearn.tree import DecisionTreeClassifier as DTC
 from time import time
+from NPTypes import NumNPArrayNxM, ArrayLike
+from typing import Tuple
 
-def best_feature_DT(x_train, y_train):
+def best_feature_DT(x_train: NumNPArrayNxM, y_train: ArrayLike) -> int:
   best_feature = -1
   best_acc = -1.0
   for i_feature in range(x_train.shape[1]):
@@ -25,10 +27,9 @@ def best_feature_DT(x_train, y_train):
       best_feature = i_feature
   return best_feature
 
-def calc_predict(y_train):
-  #Get all possible values of y_train
-
-  #Calculate which options gives the highest accuracy
+def calc_predict(y_train: ArrayLike) -> Tuple[int, int]:
+  # Get all possible values of y_train
+  # Calculate which options gives the highest accuracy
   largest_sum = -1
   best_option = -1
   for option in np.unique(y_train):
@@ -40,17 +41,17 @@ def calc_predict(y_train):
   return (best_option, largest_sum)
 
 class InvalidParameterError(Exception):
-  def __init__(self, messate="Invalid parameter"):
+  def __init__(self, messate: str = "Invalid parameter") -> None:
     print(messate)
 
 class DecisionTreeClassifier:
-  def __init__(self, splitter="best", max_depth=None):
+  def __init__(self, splitter: str = "best", max_depth: int | None = None) -> None:
     #Decision tree cannot be a leaf unless it have a predicted value assigned
     self.is_leaf = False
     self.splitter = splitter
     self.max_depth = max_depth
 
-  def split_feature_DT(self, x_train, y_train, feature_idx):
+  def split_feature_DT(self, x_train: NumNPArrayNxM, y_train: ArrayLike, feature_idx: int) -> None:
     self.branches = dict()
     self.feature_idx = feature_idx
     #Get all rows for feature selected
@@ -99,7 +100,7 @@ class DecisionTreeClassifier:
         else:
           dt.fit(x_train[new_idxs], new_y)
 
-  def fit(self, x_train, y_train, feature_idx=None):
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike, feature_idx: int | None = None) -> None:
     #If max_depth is less than 1 we fail
     if self.max_depth is not None and self.max_depth < 1:
       raise InvalidParameterError("max_depth must be in the range [1,inf)")
@@ -119,7 +120,7 @@ class DecisionTreeClassifier:
     else:
       self.split_feature_DT(x_train, y_train, feature_idx)
 
-  def predict(self, x_test):
+  def predict(self, x_train: NumNPArrayNxM) -> ArrayLike:
     #Make prediction array
     pred = np.empty(shape=(x_test.shape[0]))
 
@@ -173,4 +174,3 @@ if __name__ == '__main__':
   #pred = model.predict(x_test)
   #print("b: model accuracy = ", accuracy(y_test, pred))
   #print("b: Best feature = ", model.feature_idx)
-

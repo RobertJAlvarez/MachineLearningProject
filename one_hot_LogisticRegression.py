@@ -3,17 +3,17 @@ from PerformanceMetrics import accuracy
 from Utils import to_categorical, standardize
 from DataSets import process_gamma_dataset, mnist
 from sklearn.linear_model import LogisticRegression as LR
+from NPTypes import NumNPArrayNxM, ArrayLike, NumNPArray
 
 class LogisticRegression:
-  def sigmoid(self, z):
+  def __sigmoid(self, z: NumNPArray) -> NumNPArray:
     return 1/(1+np.exp(-z))
 
-  def __init__(self, penalty=None, tol=1e-4, max_iter=100) -> None:
-    self.penalty = penalty
+  def __init__(self, tol: float = 1e-4, max_iter: int = 100) -> None:
     self.tol = tol
     self.max_iter = max_iter
 
-  def fit(self, x_train, y_train, alpha=0.001):
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike, alpha: float = 0.001) -> None:
     X = np.c_[np.ones((x_train.shape[0],1)),x_train]  #Add a column of 1's at the beginning of the data to calculate y intercept
     ny_cols = 1 if len(y_train.shape) == 1 else y_train.shape[1]
     all_betas = np.zeros((ny_cols,X.shape[1]))
@@ -30,7 +30,7 @@ class LogisticRegression:
       print("betas.shape = ", betas.shape)
       y_col = np.reshape(temp[1],(-1,1))
       for _ in range(self.max_iter):
-        p = self.sigmoid(np.dot(X,betas))
+        p = self.__sigmoid(np.dot(X,betas))
         W = p*(1-p)
         temp = np.linalg.pinv(np.matmul(X.T, W*X))
         new_betas = betas + np.matmul(np.matmul(temp,X.T),(y_col-p))
@@ -41,25 +41,25 @@ class LogisticRegression:
       self.intercept_[i] = betas[0,0]
       self.coef_[i] = betas[1:,0]
 
-  def predict(self, x_test):
+  def predict(self, x_test: NumNPArrayNxM) -> ArrayLike:
     X = np.c_[np.ones((x_test.shape[0],1)),x_test]
     all_betas = np.hstack((np.reshape(self.intercept_,(-1,1)),self.coef_))
     ny_cols = self.intercept_.shape[0]
     if ny_cols == 1:
       z = np.dot(X, all_betas[0])
-      pred = (self.sigmoid(z)>0.5).astype(int)
+      pred = (self.__sigmoid(z)>0.5).astype(int)
     else:
       pred = np.empty(shape=(ny_cols,x_test.shape[0]))
       for i,betas in enumerate(all_betas[:]):
         z = np.dot(X, betas)
-        pred[i] = self.sigmoid(z)
+        pred[i] = self.__sigmoid(z)
       pred = np.argmax(pred,axis=0)
     return pred
 
-  def __str__(self):
-    return '{}(max_iter={:03}, penalty={})'.format(self.__class__.__name__,self.max_iter,self.penalty)
+  def __str__(self) -> str:
+    return '{}(max_iter={:03})'.format(self.__class__.__name__,self.max_iter)
 
-def classification_():
+def classification_() -> None:
   print("\nCLASSIFICATION:")
   x_train,x_test,y_train,y_test = mnist()
   y_train_oh = to_categorical(y_train)
@@ -92,7 +92,7 @@ def classification_():
   print("model.intercept_.shape = ", model.intercept_.shape)
   print("model.coef_.shape = ",model.coef_.shape)
 
-def Binary_classification():
+def Binary_classification() -> None:
   print("\nBinary classification:")
   x_train,x_test,y_train,y_test = process_gamma_dataset()
   standardize(x_train)
@@ -100,7 +100,7 @@ def Binary_classification():
 
   #My model
   print("My model")
-  model = LogisticRegression(max_iter=10, penalty=None, tol=1e-4)
+  model = LogisticRegression(max_iter=10, tol=1e-4)
   print("model = ", model)
   model.fit(x_train, y_train)
   pred = model.predict(x_test)
@@ -123,4 +123,3 @@ def Binary_classification():
 if __name__ == '__main__':
   #regression_()
   classification_()
-

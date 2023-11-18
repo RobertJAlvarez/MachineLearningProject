@@ -4,6 +4,7 @@ from Utils import to_categorical
 from DataSets import mnist, process_gpu_running_time
 from sklearn.linear_model import LinearRegression as LR
 from time import time
+from NPTypes import NumNPArrayNxM, ArrayLike, NumNPArray
 
 class LinearRegression:
   """
@@ -30,7 +31,7 @@ class LinearRegression:
     pass
 
   #(X.TX)^-1 X.T y
-  def fit(self,x_train,y_train):
+  def fit(self, x_train: NumNPArrayNxM, y_train: ArrayLike) -> None:
     #Add column of ones to also calculate beta_0
     X = np.hstack((np.ones(shape=(x_train.shape[0],1)),x_train))
     ny_cols = 1 if len(y_train.shape) == 1 else y_train.shape[1]
@@ -49,7 +50,7 @@ class LinearRegression:
       self.coef_ = np.reshape(self.coef_,(-1))
       self.intercept_ = np.reshape(self.intercept_,(-1))
 
-  def predict(self,x_test):
+  def predict(self, x_test: NumNPArrayNxM) -> NumNPArray:
     ny_cols = self.intercept_.shape[0]
     if ny_cols == 1:
       pred = np.matmul(x_test,self.coef_) + self.intercept_
@@ -57,7 +58,7 @@ class LinearRegression:
       pred = np.matmul(x_test,self.coef_.T) + self.intercept_
     return pred
 
-def classification_():
+def classification_() -> None:
   print("\nUsing mnist for classification:")
 
   x_train,x_test,y_train,y_test = mnist()
@@ -79,7 +80,7 @@ def classification_():
   print("Elapse time = {:.5f}".format(time() - t0))
   print("accuracy: {:.5f}".format(accuracy(y_test, pred)))
 
-def regression_():
+def regression_() -> None:
   x_train,x_test,y_train,y_test = process_gpu_running_time()
 
   print("My model:")
@@ -100,4 +101,3 @@ def regression_():
 if __name__ == '__main__':
   regression_()
   classification_()
-

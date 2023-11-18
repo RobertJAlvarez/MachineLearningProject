@@ -34,4 +34,3 @@ for i in range(K):
 #Print results
 print("new_beta.shape = ", B.shape)
 print("new_betas = \n", B)
-
